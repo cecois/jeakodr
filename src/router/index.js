@@ -7,12 +7,13 @@ import JEAKODR from '/src/components/JEAKODR.vue'
 
 const rfunc = (route) => {
     return {
-        query: !route.params.query ? 'iowa' : route.params.query
+        query: !route.params.query ? 'iowa' : route.params.query,
+        tags: route.params.tags
     }
 }
 
 const routes = [{
-    path: '/:query?',
+    path: '/:query?/:tags?',
     // path: '/admin/:region?/:trackiso?/:collapsed?/:panel?/:basemap?/:bbox?',
     name: 'JEAKODR',
     component: JEAKODR,

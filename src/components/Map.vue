@@ -1,15 +1,13 @@
 <template>
   <div id="mapContainer" class="">
-    <div>
-      {{JSON.stringify(OPS)}}
-    </div>
-    <l-map style="z-index: 0;" class="" ref="MAP" :zoom="zoom" :center="center" :options="{zoomControl: false,maxBounds:[
-    [-89.9, -180],
-    [89.9, 180]
-]}">
+    <!-- <div>
+  {{JSON.stringify(OPS)}}
+</div>
+ -->
+    <l-map style="z-index: 0;" ref="MAP" :options="{zoomControl: false}" @ready="_POSITION">
       <l-tile-layer key="carto_dark" name="Carto Positron Dark" visible="true" url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png" layer-type="base" />
       <l-geo-json v-if="candidates.features" :geojson="candidates" :options="optsCandidates" />
-      <l-geo-json v-if="choice.properties" :geojson="choice" :options="optsChoice" />
+      <l-geo-json v-if="choice.properties.osm_id" :geojson="choice" :options="optsChoice" />
     </l-map>
   </div>
 </template>
@@ -19,7 +17,8 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import 'leaflet/dist/leaflet.css';
 import { LMap, LTileLayer, LGeoJson, LMarker, LIcon, LCircleMarker } from '@vue-leaflet/vue-leaflet';
-import { latLngBounds } from 'leaflet';
+// import { latLngBounds } from 'leaflet';
+import { latLngBounds } from 'leaflet/dist/leaflet-src.esm';
 import * as turf from '@turf/turf';
 import { ChevronLeftIcon } from '@heroicons/vue/solid';
 import { ChevronRightIcon } from '@heroicons/vue/solid';
@@ -36,8 +35,48 @@ const ROUTE = useRoute(),
   PROPS = defineProps({
     candidates: Object,
     choice: Object,
-    activeGeometryID: Number
+    activeGeometryID: Number,
+    boundsDefault: Array
   });
+
+const center = ref({ lng: -74.1, lat: 40.75 });
+const zoom = ref(3);
+
+const _POSITION = () => {
+
+  let boundsBbox = null;
+
+  // for VIZ ConVeNIeNce We take the cHoice oBJECT and put a LiTtle pADdIng arOund IT sO wE CaN SEe IT In GeOGraphIC cOntExT
+  switch (true) {
+// If wE havE a POPUlATEd CHOICE.pROPERties Ob
+    case (Object.keys(PROPS.choice.properties).length > 0):
+      boundsBbox = turf.bbox(turf.buffer(PROPS.choice, 5, { units: 'miles' }));
+      break;
+    case PROPS.candidates.features?.length > 0:
+    // OR MaybE A Legit ARRAY of CAnDIDATes At LEAst?
+      boundsBbox = turf.bbox(PROPS.candidates);
+      break;
+    default:
+    // ThE WOrLd
+      boundsBbox = PROPS.boundsDefault;
+  }
+
+// THE rESULt IS A SiMple w,s,E,N ARray
+  let w = boundsBbox[0],
+    s = boundsBbox[1],
+    e = boundsBbox[2],
+    n = boundsBbox[3];
+
+  // we make A PrOPEr LeAFLEt BOUNDs arraY OuT oF It
+  let bounds = [
+    [s, e],
+    [n, w]
+  ];
+
+  // We snaP The mAp tO iT
+  MAP.value.leafletObject.fitBounds(bounds);
+
+};
 
 const OPS = computed(() => {
   return {
@@ -45,15 +84,25 @@ const OPS = computed(() => {
   }
 });
 
-const center = [44, -80];
-const zoom = 3;
 
 onMounted(() => {
   console.log(`maptrace comp mounted`);
 });
 
-const location = [40, -80];
+watch(() => [PROPS.choice, PROPS.candidates], (newp, oldp) => {
+  _POSITION();
+})
 
+
+
+/*
+|||||||||||||||||||||||||||||||||||||||||||||||                                           o8
+|||||||||||||||||||||||||||||||||||||||||||||||                     ooooooo  ooooooooo  o888oo  oooooooo8
+|||||||||||||||||||||||||||||||||||||||||||||||                   888     888 888    888 888   888ooooooo
+|||||||||||||||||||||||||||||||||||||||||||||||                   888     888 888    888 888           888
+|||||||||||||||||||||||||||||||||||||||||||||||                     88ooo88   888ooo88    888o 88oooooo88
+|||||||||||||||||||||||||||||||||||||||||||||||                              o888
+           */
 const optsCandidates = {
     onEachFeature: (feature, layer) => {
       layer.bindTooltip(`<div>${feature.properties.display_name}</div>`)
