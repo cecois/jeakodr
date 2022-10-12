@@ -1,4 +1,5 @@
 @import url("./overpass.css");
+@import url('https://fonts.googleapis.com/css2?family=Passion+One&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -34,3 +35,6 @@ Ybmmmd'
 1); /* Gecko Browsers */
 }
 
+input{
+      font-family: 'Passion One', cursive;
+}

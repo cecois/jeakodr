@@ -13,13 +13,16 @@
     </section><!-- /section.E -->
 
     <section v-if="card=='Q'" id="queryMenu" class="absolute z-50 w-screen flex bg-gray-100 justify-center items-center">
+      <div class="w-full bg-white rounded shadow-lg p-8 m-4 md:max-w-2xl md:mx-auto">
+      <form id="cbbQueryForm" class="md:flex md:flex-wrap md:justify-between" @submit.prevent="getCandidates" method="post">
       <input v-model="query" type="text" id="queryInput" class="block p-4 w-full h-full rounded-sm sm:text-lg focus:ring-blue-500 focus:border-blue-500 text-center">
+    </form></div>
     </section><!-- /section.Q -->
     
     <section v-if="card=='D'" id="cbbDocument" class="absolute z-50 w-screen flex bg-gray-100 justify-center items-center">
 
-      <!-- <input v-model="cbbDocument" type="text" class="block p-4 w-full h-full rounded-sm sm:text-lg focus:ring-blue-500 focus:border-blue-500 text-center"> -->
-    <div class="flex flex-wrap items-stretch w-full mb-4 relative">
+      
+    <!-- <div class="flex flex-wrap items-stretch w-full mb-4 relative">
       <input v-model="cbbDocument.name" type="text" class="flex-shrink flex-grow flex-auto leading-normal w-px flex-1 border h-50 border-grey-light rounded rounded-r-none px-3 relative" placeholder="name">
     </div>
     <div class="flex flex-wrap items-stretch w-full mb-4 relative">
@@ -27,9 +30,39 @@
     </div>
     <div class="flex flex-wrap items-stretch w-full mb-4 relative">
       <input v-model="cbbDocument.tagString" type="text" class="flex-shrink flex-grow flex-auto leading-normal w-px flex-1 border h-50 border-grey-light rounded rounded-r-none px-3 relative" placeholder="tagstring">
-    </div>
+    </div> -->
 
-    <div class="flex flex-wrap items-stretch w-full mb-4 relative">{{JSON.stringify(cbbDocument)}}</div>
+  <div class="flex items-center h-screen w-full">
+  <div class="w-full bg-white rounded shadow-lg p-8 m-4 md:max-w-2xl md:mx-auto">
+    <form id="cbbDocumentForm" class="mb-4 md:flex md:flex-wrap md:justify-between" @submit.prevent="submitDocument" method="post">
+      <!-- <div class="flex flex-col mb-4 md:w-1/2">
+        <label class="mb-2 uppercase tracking-wide font-bold text-lg text-grey-darkest" for="first_name">First Name</label>
+        <input class="border py-2 px-3 text-grey-darkest md:mr-2" type="text" name="first_name" id="first_name">
+      </div> -->
+      <!-- <div class="flex flex-col mb-4 md:w-1/2">
+        <label class="mb-2 uppercase font-bold text-lg text-grey-darkest md:ml-2" for="last_name">Last Name</label>
+        <input class="border py-2 px-3 text-grey-darkest md:ml-2" type="text" name="last_name" id="last_name">
+      </div> -->
+      <div class="flex flex-col mb-4 md:w-full">
+        <label class="text-stone-500 mb-2 uppercase text-lg" for="email">name</label>
+        <input v-model="cbbDocument.name" class="border py-2 px-3 text-grey-darkest" type="text" name="name">
+      </div>
+      <div class="flex flex-col mb-4 md:w-full">
+        <label class="text-stone-500 mb-2 uppercase text-lg" for="email">anno</label>
+        <input v-model="cbbDocument.anno" class="border py-2 px-3 text-grey-darkest" type="text" name="anno">
+      </div>
+      <div class="flex flex-col mb-4 md:w-full">
+        <label class="text-stone-500 mb-2 uppercase text-lg" for="email">tagString</label>
+        <input v-model="cbbDocument.tagString" class="border py-2 px-3 text-grey-darkest" type="text" name="tagString">
+      </div>
+      <!-- <div class="flex flex-col mb-6 md:w-full">
+        <label class="mb-2 uppercase font-bold text-lg text-grey-darkest" for="password">Password</label>
+        <input class="border py-2 px-3 text-grey-darkest" type="password" name="password" id="password">
+      </div> -->
+      <button class="block text-black uppercase text-lg mx-auto p-4 rounded" type="submit">submit</button>
+    </form>
+  </div>
+</div>
     
     </section><!-- /section.D -->
     
@@ -40,14 +73,17 @@
     <section class="w-screen flex justify-center items-center">
       <progress :value="loading.progress" max="100" />
     </section>
-    <section id="queryResults" class="text-xs absolute z-50 w-screen flex justify-center items-center">
-      <div class="z-10 absolute w-48 h-12 rounded-lg bg-green-500">
-        <p><span @click="card='Q'">Q</span>*<span @click="card=='D'?card='':card='D'">D</span>*<span @click="card=='E'?card='':card='E'">E</span>*<span @click="card=='R'?card='':card='R'">R</span></p>
+
+    <section class="w-screen flex justify-center items-center">
+    <div class="z-10 absolute w-48 h-12 rounded-lg bg-green-500">
+        <!-- <p><span @click="setCard('Q')">Q</span>*<span @click="card=='D'?card='':card='D'">D</span>*<span @click="card=='E'?card='':card='E'">E</span>*<span @click="card=='R'?card='':card='R'">R</span></p> -->
         <p><span @click="submitDocument">subm</span></p>
         <!-- <p @click="DEV">DEV</p> -->
         <!-- <p>{{document.name}}::{{document.anno}}::{{document.cartodb_id}}</p> -->
       </div>
-      <div v-for="candidate in candidates.features" class="relative w-48 h-12 rounded-lg bg-gray-200 mr-1 p-2">{{launderOSMDisplay(candidate.properties,'display_name')}}
+    </section>
+    <section id="queryResults" class="text-xs absolute z-50 w-screen flex justify-center items-center">
+      <div v-for="candidate in candidates.features" class="relative w-48 h-12 rounded-lg bg-gray-200 mr-1 p-2">{{launderNameString(candidate.properties?.display_name?candidate.properties.display_name:candidate.properties.name)}}
         <p @click="setChoiceGeometry(candidate.properties.osm_id)">({{candidate.geometry.type.toLowerCase()}})</p>
       </div>
     </section>
@@ -59,6 +95,7 @@
 <script setup>
 import { useRoute, useRouter } from 'vue-router';
 import { ref, reactive, computed, onMounted, watch, toRaw } from 'vue';
+import CONFIG from '../CONFIG.json'
 import { latLngBounds, latLng } from 'leaflet';
 import * as turf from '@turf/turf';
 
@@ -71,6 +108,7 @@ const ROUTE = useRoute(),
   PROPS = defineProps({
     query: String
     ,tags: String
+    ,anno: String
   });
 
 /*
@@ -81,11 +119,13 @@ const ROUTE = useRoute(),
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                          ::.: :     :     :   : :    :    : :: :::
 */
 const card = ref('D');
+const cardKeys=['D','E','Q','R'];
 const loading = ref({ iz: false, progress: 0 });
 const candidates = ref({});
 const choice = ref({ properties: {} });
 const cbbDocument = reactive({ name: "",anno:"",liveString:"",tagString:"" });
 const error = reactive({ source: null,msg:null });
+const dropzone = reactive({state:"",msg:""});
 //
 const boundsDefault = [-180, -89.9, 180, 89.9];
 
@@ -111,13 +151,22 @@ const cbbResponse = computed(() => {
 """""""""""""""""""""""""""""""""""""""""""""""""""""                 |.  \    /:  |(:      "|    \:  |   (:  (  )  :)\        /  |:       :) /" \   :)
 """""""""""""""""""""""""""""""""""""""""""""""""""""                 |___|\__/|___| \_______)     \__|    \__|  |__/  \"_____/   (________/ (_______/
 */
+const setCard = (key) => {
+  console.log("key", key);
+// is this is a valid card, even?
+let cardKey = cardKeys.find(k=>k==key.toUpperCase());
+// if it's the current card we toggle off
+let newCard = cardKey==card.value ? null:cardKey;
+card.value=newCard;
+}//setcard
+
 const constructDocument = () => {
 
   let d = new Date();
   let geo = choice.value;
   geo.properties.name=cbbDocument.name;
   geo.properties.anno=cbbDocument.anno;
-  geo.properties.tags=cbbDocument.tagString.split(",");
+  geo.properties.tags=cbbDocument.tagString.split(",").map(ts=>ts.trim());
   geo.properties.scnotes="nominatim via milleria JeAKODR2";
   geo.properties.cartodb_id=null;
   geo.properties.created_at=d.toISOString();
@@ -139,11 +188,12 @@ return geo;
 }
 
 
+const submitDocumentFake = () => {
+  console.log("fake submitDocument")
+}
 const submitDocument = () => {
 
 let _cbbdoc = constructDocument();
-// console.log("_cbbdoc", JSON.stringify(_cbbdoc));
-//       error.msg="fetch is turned off";error.source="submitDocument"
   
 fetch("http://localhost:3030/v3/cbb/geom", {
     "credentials": "omit",
@@ -172,16 +222,16 @@ const setChoiceGeometry = (id) => {
   });
 
   choice.value = newChoice;
-  cbbDocument.name=newChoice.properties.display_name;
+  cbbDocument.name=newChoice.properties?.display_name;
 };
 
-const launderOSMDisplay = (fea, prop) => {
+const launderNameString = (nameString) => {
   /*
   osM dIsPLay names arE tYpICALLY prETTY GNarLy - FoR oUr PUrposES heRe ThE FiRsT fEW clausES WILl SUFFICe
   */
-  return fea.valueOf()[prop].split(",").filter((propel, propeli) => {
+  return nameString?nameString.split(",").filter((propel, propeli) => {
     return propeli < 3 ? propel : null;
-  }).join(", ")
+  }).join(", "):"no name prop";
 }
 
 const normalizeOSM = (features) => {
@@ -211,6 +261,36 @@ const animateProgress = () => {
   loading.value.progress++;
   setTimeout(() => {}, 10100);
 };
+
+const acceptDrop = (drop) => {
+
+let dro=drop[0];
+
+      
+      const reader = new FileReader();
+      reader.loadend = e => {
+        delete e.target.result;
+      };
+      reader.onload = D => {
+
+let d=JSON.parse(D.target.result);
+console.log("d", d);
+d.features=d.features.map(dd=>{
+  dd.properties={
+                "place_id": null,
+                "display_name": "(manual geojson)",osm_id:0
+            }
+            return dd;
+})
+
+      candidates.value = d;
+  cbbDocument.name="dropped geojson";
+        
+      } //reader.onload
+
+      reader.readAsText(dro, "UTF-8");
+
+};//acceptdrop
 
 const getCandidates = () => {
 
@@ -261,9 +341,59 @@ const getCandidates = () => {
 
 
 onMounted(() => {
+  
+  /* ++++++++++++++++++++++++++++++++++++++++++ dropzone */
+    window.addEventListener("dragenter", e => {
+      // console.log("in dragenter, e:", e);
+      dropzone.state = "drag";
+      dropzone.msg = "drop fil";
+    });
+
+    window.addEventListener("dragleave", e => {
+      e.preventDefault();
+      dropzone.state = "idle";
+      dropzone.msg = "fil drop";
+    });
+
+    window.addEventListener("dragover", e => {
+      e.preventDefault();
+      dropzone.state = "drag";
+    });
+
+    window.addEventListener("drop", e => {
+      e.preventDefault();
+      dropzone.state = "idle";
+      dropzone.msg = "tnx";
+
+      let fil = e.dataTransfer.files;
+      acceptDrop(fil);
+    });
+
+    /* ++++++++++++++++++++++++++++++++++++++++++ /dropzone */
+
+    /*
+    keyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeys          ____ ____ ____ ____
+    keyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeys         ||k |||e |||y |||s ||
+    keyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeys         ||__|||__|||__|||__||
+    keyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeyskeys         |/__\|/__\|/__\|/__\|
+    */
+
+    document.onkeydown = (e)=>{
+    // if (e.key === "s" && (e.ctrlKey || e.metaKey)) {
+    //     e.preventDefault(); // present "Save Page" from getting triggered.
+
+    //     alert("The shortcut was pressed");
+    // }
+    !document.activeElement.form && setCard(e.key);
+    
+};
+
+
   PROPS.query && console.info(`incoming query is ${PROPS.query} so we wanna fire the geocode here`);
   PROPS.tags && console.info(`incoming tags exists so we wanna decode and posthaste make it the cbbDocument.tagString`);
   cbbDocument.tagString = PROPS.tags ?decodeURI(PROPS.tags):null;
+  PROPS.anno && console.info(`incoming anno exists so we wanna decode and posthaste make it the cbbDocument.anno`);
+  cbbDocument.anno = PROPS.anno ?decodeURI(PROPS.anno):null;
   PROPS.query && getCandidates()
 });
 </script>
@@ -280,10 +410,11 @@ body {
   top: 50%;
 }
 #cbbDocument {
-  background-color: rgba(244, 244, 244, .5);
+  background-color: rgba(244, 244, 244, 0);
   height: 25vh;
   top: 50%;
 }
+#cbbDocumentForm{font-size: 3em;}
 #cbbLiveString {
   background-color: rgba(2, 2, 2, 9);color: white;font-weight: 900;
   font-size: 3em;
@@ -291,12 +422,12 @@ body {
   top: 0%;
 }
 #queryMenu {
-  background-color: rgba(244, 244, 244, .5);
+  background-color: rgba(244, 244, 244, 0);
   height: 25vh;
-  top: 50%;
+  top: 40%;
 }
 #queryInput {
-  font-size: 3em;
+  font-size: 5em;
 }
 
 #queryResults {
