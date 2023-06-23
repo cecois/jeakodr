@@ -7,7 +7,7 @@ import JEAKODR from '/src/components/JEAKODR.vue'
 
 const rfunc = (route) => {
     return {
-        query: !route.params.query ? 'iowa' : route.params.query,
+        query: !route.params.query ? null : route.params.query,
         tags: route.params.tags,
         anno: route.params.anno
     }

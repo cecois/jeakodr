@@ -7,6 +7,70 @@
 
 
 /*
+
+8b       d8 ,adPPYYba, 8b,dPPYba, ,adPPYba,
+`8b     d8' ""     `Y8 88P'   "Y8 I8[    ""
+ `8b   d8'  ,adPPPPP88 88          `"Y8ba,
+  `8b,d8'   88,    ,88 88         aa    ]8I
+    "8"     `"8bbdP"Y8 88         `"YbbdP"'
+
+*/
+
+:root {
+  --white: #f8f9fa;
+  --white-off-1: #e5e5e5;
+  --white-off-2: #ced4da;
+
+
+--hunter-green: #386641ff;
+--may-green: #6a994eff;
+--android-green: #a7c957ff;
+--eggshell: #f2e8cfff;
+--bittersweet-shimmer: #bc4749ff;
+
+--app-1: var(--may-green);
+--app-2: var(--hunter-green);
+--app-3: var(--android-green);
+--app-4: var(--eggshell);
+--app-5: var(--bittersweet-shimmer);
+}/*/root*/
+
+.app-copy-1{color: var(--app-1);}
+.app-bg-1{background-color: var(--app-1);}
+.app-copy-2{color: var(--app-2);}
+.app-bg-2{background-color: var(--app-2);}
+.app-copy-3{color: var(--app-3);}
+.app-bg-3{background-color: var(--app-3);}
+.app-copy-4{color: var(--app-4);}
+.app-bg-4{background-color: var(--app-4);}
+.app-copy-5{color: var(--app-5);}
+.app-bg-5{background-color: var(--app-5);}
+
+
+.app-copy-1-off-1{color: var(--app-1);filter: opacity(.55);}
+.app-copy-1-off-2{color: var(--app-1);filter: opacity(.35);}
+.app-copy-1-off-3{color: var(--app-1);filter: opacity(.2);}
+
+/*
+                                 _,.----.              ,---.        ,-,--.    ,-,--.     ,----.    ,-,--.
+                               .' .' -   \   _.-.    .--.'  \     ,-.'-  _\ ,-.'-  _\ ,-.--` , \ ,-.'-  _\
+                              /==/  ,  ,-' .-,.'|    \==\-/\ \   /==/_ ,_.'/==/_ ,_.'|==|-  _.-`/==/_ ,_.'
+                              |==|-   |  .|==|, |    /==/-|_\ |  \==\  \   \==\  \   |==|   `.-.\==\  \
+                              |==|_   `-' \==|- |    \==\,   - \  \==\ -\   \==\ -\ /==/_ ,    / \==\ -\
+                              |==|   _  , |==|, |    /==/ -   ,|  _\==\ ,\  _\==\ ,\|==|    .-'  _\==\ ,\
+                              \==\.       /==|- `-._/==/-  /\ - \/==/\/ _ |/==/\/ _ |==|_  ,`-._/==/\/ _ |
+                               `-.`.___.-'/==/ - , ,|==\ _.\=\.-'\==\ - , /\==\ - , /==/ ,     /\==\ - , /
+                                          `--`-----' `--`         `--`---'  `--`---'`--`-----``  `--`---'
+            */
+.app-white{color: var(--white);}
+.app-white-off-1{color: var(--white-off);}
+.app-white-off-2{color: var(--white-off-off);}
+
+.app-copy-on{color: var(--app-5);}
+.app-copy-off{color: var(--app-4);}
+
+
+/*
            ,,           ,,                   ,,
          `7MM          *MM                 `7MM
            MM           MM                   MM
@@ -37,4 +101,19 @@ Ybmmmd'
 
 input{
       font-family: 'Passion One', cursive;
+}
+
+
+::-webkit-progress-value {
+  background-color: var(--app-1);
+}
+
+::-moz-progress-bar {
+  background-color: var(--app-1);
+}
+
+progress[value] {
+  width: 100%;
+  height: 12px;
+  border-radius: 2px;
 }

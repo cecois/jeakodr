@@ -4,7 +4,7 @@
   {{JSON.stringify(OPS)}}
 </div>
  -->
-    <l-map style="z-index: 0;" ref="MAP" :options="{zoomControl: false}" @ready="_POSITION">
+    <l-map style="z-index: 0;" ref="MAP" :options="{zoomControl: false,worldCopyJump:true}" @ready="_POSITION">
       <l-tile-layer key="carto_dark" name="Carto Positron Dark" visible="true" url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png" layer-type="base" />
       <l-geo-json v-if="candidates.features" :geojson="candidates" :options="optsCandidates" />
       <l-geo-json v-if="choice.properties.osm_id" :geojson="choice" :options="optsChoice" />
@@ -23,12 +23,18 @@ import * as turf from '@turf/turf';
 import { ChevronLeftIcon } from '@heroicons/vue/solid';
 import { ChevronRightIcon } from '@heroicons/vue/solid';
 
+
+
+const colors={
+  geom:"#A7C957"
+  ,choice:"#bc6c25"
+}
 const MAP = ref(null);
 
 const circleRadius = 22,
   circleColor = "white",
   circleChoiceRadius = 25,
-  circleChoiceColor = "rgba(255, 73, 92,1)";
+  circleChoiceColor = colors.choice;
 
 const ROUTE = useRoute(),
   ROUTER = useRouter(),
@@ -108,7 +114,7 @@ const optsCandidates = {
       layer.bindTooltip(`<div>${feature.properties.display_name}</div>`)
     },
     style: (feature) => {
-        return { "color": "green", "fill": true, "width": 1, "weight": 1 }
+        return { "color": colors.geom, "fill": true, "width": 1, "weight": 1 }
       } //style
   } //optscandidates
 
@@ -117,7 +123,7 @@ const optsChoice = {
       layer.bindTooltip(`<div>${feature.properties.display_name}</div>`)
     },
     style: (feature) => {
-        return { "color": "rgba(255, 73, 92,1)", "fill": true, "width": 5, "weight": 5 }
+        return { "color": colors.choice, "fill": true, "width": 5, "weight": 5 }
       } //style
   } //optscandidates
 </script>
