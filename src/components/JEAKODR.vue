@@ -173,7 +173,7 @@
             v-for="(stringSegment, stringSegmenti) in launderNameString(
               candidate.properties?.display_name
                 ? candidate.properties.display_name
-                : candidate.properties.name
+                : candidate.properties.name,
             ).split(',')"
             :class="[stringSegmenti == 0 ? 'app-copy-1' : 'app-copy-1-off-2']"
           >
@@ -314,7 +314,7 @@ const geometryIcon = (geomType) => {
 };
 
 const submitDocumentDEV = () => {
-  console.log("fake submitDocument");
+  // console.log("fake submitDocument");
   let _cbbdoc = constructDocument(),
     _cbbdocFinal,
     properties = _cbbdoc.properties;
@@ -325,7 +325,7 @@ const submitDocumentDEV = () => {
   } else {
     _cbbdocFinal = _cbbdoc;
   }
-  console.log("_cbbdocFinal", _cbbdocFinal);
+  // console.log("_cbbdocFinal", _cbbdocFinal);
 };
 
 const constructDocument = () => {
@@ -533,7 +533,7 @@ const getCandidates = () => {
         headers: { "Access-Control-Allow-Origin": "*" },
         method: "GET",
         mode: "cors",
-      }
+      },
     )
       .then(async (res) => {
         setTimeout(() => {}, 60100);
@@ -611,18 +611,18 @@ onMounted(() => {
   PROPS.query && (queryString.value = PROPS.query);
   PROPS.query &&
     console.info(
-      `incoming query is ${PROPS.query} so we wanna set a local querystring to ${queryString} fire the geocode here`
+      `incoming query is ${PROPS.query} so we wanna set a local querystring to ${queryString} fire the geocode here`,
     );
   PROPS.query && getCandidates();
 
   PROPS.tags &&
     console.info(
-      `incoming tags exists so we wanna decode and posthaste make it the cbbDocument.tagString`
+      `incoming tags exists so we wanna decode and posthaste make it the cbbDocument.tagString`,
     );
   cbbDocument.tagString = PROPS.tags ? decodeURI(PROPS.tags) : null;
   PROPS.anno &&
     console.info(
-      `incoming anno exists so we wanna decode and posthaste make it the cbbDocument.anno`
+      `incoming anno exists so we wanna decode and posthaste make it the cbbDocument.anno`,
     );
   cbbDocument.anno = PROPS.anno ? decodeURI(PROPS.anno) : null;
 });
